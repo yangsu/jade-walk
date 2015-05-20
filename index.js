@@ -18,26 +18,38 @@ function walkAST(ast, before, after) {
       break;
     case 'Case':
     case 'Each':
-    case 'Mixin':
-    case 'Tag':
     case 'When':
     case 'Code':
       if (ast.block) {
         ast.block = walkAST(ast.block, before, after);
       }
-      break;
-    case 'Extends':
-    case 'Include':
-      // arguably we should walk into the asts, but that's not what the linker wants
-      if (ast.ast) {
-        //ast.ast = walkAST(ast.ast, before, after);
+      if (ast.alternative) {
+        ast.alternative = walkAST(ast.alternative, before, after);
+      }
+      if (ast.code) {
+        ast.code = walkAST(ast.code, before, after);
       }
       break;
-    case 'Attrs':
+    case 'Mixin':
+    case 'Tag':
+      if (ast.block) {
+        ast.block = walkAST(ast.block, before, after);
+      }
+      if (ast.code) {
+        ast.code = walkAST(ast.code, before, after);
+      }
+      break;
     case 'BlockComment':
+    case 'Filter':
+    case 'Include':
+      if (ast.block) {
+        ast.block = walkAST(ast.block, before, after);
+      }
+      break;
+    case 'Extends':
+    case 'Attrs':
     case 'Comment':
     case 'Doctype':
-    case 'Filter':
     case 'Literal':
     case 'MixinBlock':
     case 'Text':
